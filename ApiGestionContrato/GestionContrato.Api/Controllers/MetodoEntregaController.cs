@@ -87,7 +87,7 @@ namespace GestionContrato.Api.Controllers
         {
             try
             {
-                var metodoEntrega = await metodoEntregaService.obtenerMetodoEntregaId(id);
+                var metodoEntrega = await metodoEntregaService.obtenerMetodoEntregaId(id);//cambio jackson
                 return Ok(metodoEntrega);
 
             }
