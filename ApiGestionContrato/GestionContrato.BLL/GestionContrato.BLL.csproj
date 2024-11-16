@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="3.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GestionContrato.DAL\GestionContrato.DAL.csproj" />
+    <ProjectReference Include="..\GestionContrato.Dto\GestionContrato.Dto.csproj" />
+    <ProjectReference Include="..\GestionContrato.Models\GestionContrato.Models.csproj" />
+    <ProjectReference Include="..\GestionContrato.Utility\GestionContrato.Utility.csproj" />
+  </ItemGroup>
+
+</Project>
