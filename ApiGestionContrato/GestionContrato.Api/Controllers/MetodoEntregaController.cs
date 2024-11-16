@@ -24,6 +24,7 @@ namespace GestionContrato.Api.Controllers
             try
             {
                 var listaMetodoEntrega = await metodoEntregaService.listar(valorBusqueda);
+                // Eeste es un pequeño cambio
                 return Ok(listaMetodoEntrega);
 
             }
@@ -31,6 +32,7 @@ namespace GestionContrato.Api.Controllers
             {
                 return BadRequest(new { message = $"Error: {ex.Message} " });
             }
+
         }
 
         [HttpPost]
