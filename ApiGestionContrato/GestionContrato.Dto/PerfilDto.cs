@@ -13,6 +13,9 @@ namespace GestionContrato.Dto
         public string? ApellidoPaterno { get; set; } = null!;
         public string? ApellidoMaterno { get; set; } = null!;
         public string? Correo { get; set; } = null!;
+        public AreaDto? Area { get; set; }
+        public string? Rol { get; set; } = null!;
+        public string? NombreCompleto { get; set; } = null!;
         public UsuarioDto? UsuarioRegistro { get; set; }
         public DateTime? FechaRegistro { get; set; }
         public UsuarioDto? UsuarioModificacion { get; set; }

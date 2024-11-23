@@ -3,6 +3,7 @@ using GestionContrato.BLL.Services.Interfaces;
 using GestionContrato.DAL.Repositorios.Interfaces;
 using GestionContrato.Dto;
 using GestionContrato.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,7 @@ namespace GestionContrato.BLL.Services
             try
             {
                 var usuario = await usuarioRepository.Get(u => u.Id == id);
+
                 if(usuario ==  null)
                 {
                     throw new TaskCanceledException("Perfil no encontrado");

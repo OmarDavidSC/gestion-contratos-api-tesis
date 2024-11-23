@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GestionContrato.Api.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class PerfilController
     {
         private readonly IPerfilService perfilService;

@@ -19,11 +19,13 @@ namespace GestionContrato.Utility
                .ForMember(dest => dest.FechaModificacion, opt => opt.MapFrom(src => src.FechaModificacion))
                .ForMember(dest => dest.UsuarioModificacion, opt => opt.MapFrom(src => src.UsuarioModificacion))
                .ForMember(dest => dest.FechaRegistro, opt => opt.MapFrom(src => src.FechaRegistro))
-               .ForMember(dest => dest.UsuarioRegistro, opt => opt.MapFrom(src => src.UsuarioRegistro));
+               .ForMember(dest => dest.UsuarioRegistro, opt => opt.MapFrom(src => src.UsuarioRegistro))
+               .ForMember(dest => dest.Area, opt => opt.MapFrom(src => src.Area));
 
             CreateMap<PerfilDto, Usuario>()
                 .ForMember(dest => dest.FechaModificacion, opt => opt.MapFrom(src => src.FechaModificacion))
-                .ForMember(dest => dest.UsuarioModificacion, opt => opt.MapFrom(src => src.UsuarioModificacion));
+                .ForMember(dest => dest.UsuarioModificacion, opt => opt.MapFrom(src => src.UsuarioModificacion))
+                .ForMember(dest => dest.Area, opt => opt.MapFrom(src => src.Area));
             #endregion
 
             //Adenda
