@@ -41,7 +41,12 @@ namespace GestionContrato.BLL.Services
                 if (usuario == null)
                 {
                     throw new TaskCanceledException("El usuario no existe");
-                }              
+                }     
+                
+                if(!usuario.Habilitado)
+                {
+                    throw new TaskCanceledException("El usuario esta deshabilitado. Comuniquese con el Administrador");
+                }
 
                 return new UsuarioDto
                 {

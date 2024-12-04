@@ -1,4 +1,6 @@
-﻿using GestionContrato.BLL.Services.Interfaces;
+﻿using GestionContrato.BLL.Services;
+using GestionContrato.BLL.Services.Interfaces;
+using GestionContrato.DAL.Repositorios;
 using GestionContrato.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -120,6 +122,25 @@ namespace GestionContrato.Api.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new { message = $"Ha ocurrido un problema {ex.Message}" });
+            }
+        }
+
+        [HttpGet]
+        [Route("notifications")]
+        public async Task<FG<object>> obtenerNotificaciones()
+        {
+            var response = new FG<object>(false, new { }, "");
+            try
+            {
+                var data = await contratoService.ObtenerNotificacionesContratos();
+                response = new FG<object>(true, data, "Notificaciones");
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response = new FG<object>($"{ex.Message}");
+                return response;
             }
         }
     }

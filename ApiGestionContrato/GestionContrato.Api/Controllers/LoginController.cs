@@ -1,4 +1,5 @@
 ﻿using GestionContrato.BLL.Services.Interfaces;
+using GestionContrato.DAL.Repositorios;
 using GestionContrato.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ namespace GestionContrato.Api.Controllers
 
         [HttpPost]
         [Route("iniciar-sesion")]
-        public async Task<IActionResult> IniciarSesion(UserLoginDto usuario)
+        public async Task<FG<object>> IniciarSesion(UserLoginDto usuario)
         {
             try
             {
@@ -32,7 +33,6 @@ namespace GestionContrato.Api.Controllers
                 {
                     var keyBytes = Encoding.ASCII.GetBytes(secretKey);
                     var claims = new ClaimsIdentity();
-
                     claims.AddClaim(new Claim(ClaimTypes.Name, usuario.Correo));
 
                     var tokenDescriptor = new SecurityTokenDescriptor
@@ -44,30 +44,23 @@ namespace GestionContrato.Api.Controllers
 
                     var tokenHandler = new JwtSecurityTokenHandler();
                     var tokenConfig = tokenHandler.CreateToken(tokenDescriptor);
-
                     string tokenCreado = tokenHandler.WriteToken(tokenConfig);
-
-                    return Ok(new
-                    {
-                        token = tokenCreado,
-                        id = autenticado.Id
-                    });
+                    var response = new FG<object>(true, new { token = tokenCreado, Id = autenticado.Id }, "Has Iniciado sesión correctamente");
+                    return response;
                 }
                 else
                 {
-                    return StatusCode(StatusCodes.Status401Unauthorized, new
-                    {
-                        token = "",
-                        idUsuario = 0
-
-                    });
+                    var response = new FG<object>("Usuario o contraseña incorrectos.");
+                    return response;
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = $"Ha ocurrido un problema {ex.Message}" });
+                var response = new FG<object>($"{ex.Message}");
+                return response;
             }
         }
+
 
     }
 }

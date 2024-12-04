@@ -13,6 +13,21 @@ namespace GestionContrato.Utility
     {
         public AutoMapperModel()
         {
+
+            #region Perfil
+            CreateMap<Usuario, PerfilDto>()
+               .ForMember(dest => dest.FechaModificacion, opt => opt.MapFrom(src => src.FechaModificacion))
+               .ForMember(dest => dest.UsuarioModificacion, opt => opt.MapFrom(src => src.UsuarioModificacion))
+               .ForMember(dest => dest.FechaRegistro, opt => opt.MapFrom(src => src.FechaRegistro))
+               .ForMember(dest => dest.UsuarioRegistro, opt => opt.MapFrom(src => src.UsuarioRegistro))
+               .ForMember(dest => dest.Area, opt => opt.MapFrom(src => src.Area));
+
+            CreateMap<PerfilDto, Usuario>()
+                .ForMember(dest => dest.FechaModificacion, opt => opt.MapFrom(src => src.FechaModificacion))
+                .ForMember(dest => dest.UsuarioModificacion, opt => opt.MapFrom(src => src.UsuarioModificacion))
+                .ForMember(dest => dest.Area, opt => opt.MapFrom(src => src.Area));
+            #endregion
+
             //Adenda
             #region Adenda
             CreateMap<Adenda, AdendaDto>();
@@ -182,7 +197,7 @@ namespace GestionContrato.Utility
 
             //DocumentosAdicionales
             #region DocumentosAdicionales
-            CreateMap<DocumentosAdicionales,  DocumentosAdicionalesDto>();
+            CreateMap<DocumentosAdicionales, DocumentosAdicionalesDto>();
             CreateMap<DocumentosAdicionalesDto, DocumentosAdicionales>();
 
             CreateMap<DocumentosAdicionales, DocumentosAdicionalesDto>()
@@ -202,14 +217,14 @@ namespace GestionContrato.Utility
 
             //Estado
             #region Estado
-            CreateMap<Estado,  EstadoDto>();
+            CreateMap<Estado, EstadoDto>();
             CreateMap<EstadoDto, Estado>();
             #endregion
 
             //Garantia
             #region Garantia
-            CreateMap<Garantia,  GarantiaDto>();
-            CreateMap<GarantiaDto,  Garantia>();
+            CreateMap<Garantia, GarantiaDto>();
+            CreateMap<GarantiaDto, Garantia>();
 
             CreateMap<Garantia, GarantiaDto>()
                 .ForMember(dest => dest.Banco, opt => opt.MapFrom(src => src.Banco))
@@ -280,7 +295,7 @@ namespace GestionContrato.Utility
 
             //Poliza 
             #region Poliza
-            CreateMap<Poliza,  PolizaDto>();
+            CreateMap<Poliza, PolizaDto>();
             CreateMap<PolizaDto, Poliza>();
 
             CreateMap<Poliza, PolizaDto>()
@@ -306,7 +321,7 @@ namespace GestionContrato.Utility
 
             //Proveedor
             #region Proveedor
-            CreateMap<Proveedor,  ProveedorDto>();
+            CreateMap<Proveedor, ProveedorDto>();
             CreateMap<ProveedorDto, Proveedor>();
 
             CreateMap<Proveedor, ProveedorDto>()
@@ -338,7 +353,7 @@ namespace GestionContrato.Utility
 
             //TipoAdenda
             #region  TipoAdenda
-            CreateMap<TipoAdenda,  TipoAdendaDto>();
+            CreateMap<TipoAdenda, TipoAdendaDto>();
             CreateMap<TipoAdendaDto, TipoAdenda>();
 
             CreateMap<TipoAdenda, TipoAdendaDto>()
@@ -404,7 +419,7 @@ namespace GestionContrato.Utility
             //TipoPoliza
             #region TipoPoliza
             CreateMap<TipoPoliza, TipoPolizaDto>();
-            CreateMap<TipoPolizaDto,  TipoPoliza>();
+            CreateMap<TipoPolizaDto, TipoPoliza>();
 
             CreateMap<TipoPoliza, TipoPolizaDto>()
                 .ForMember(dest => dest.UsuarioRegistro, opt => opt.MapFrom(src => src.UsuarioRegistro))
