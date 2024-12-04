@@ -722,6 +722,8 @@ namespace GestionContrato.BLL.Services
                     contratoEntidad.IdEstado = modelo.IdEstado;
                     contratoEntidad.IdUsuarioModificacion = modelo.IdUsuarioModificacion;
                     contratoEntidad.FechaModificacion = DateTime.Now;
+                    contratoEntidad.FechaCierreContrato = DateTime.Now;
+                    contratoEntidad.ComentarioCierreContrato = modelo.Comentarios;
 
                     await contratoRepository.UpdateAsync(contratoEntidad);
 
@@ -741,6 +743,82 @@ namespace GestionContrato.BLL.Services
             catch (Exception ex)
             {
                 throw new Exception("Error: " + ex.Message);
+            }
+        }
+
+        public async Task<List<NotificacionContratoDto>> ObtenerNotificacionesContratos()
+        {
+            try
+            {
+                // Guid para los estados
+                Guid IdEnRegistro = new Guid("FD4668DA-0F09-4810-A13E-9E85B50693EA");
+                Guid IdEnAprobacion = new Guid("51A3BEB9-0D7F-4147-9E24-6604E7E682D5");
+                Guid IdVigente = new Guid("3155E7A5-ADC1-4D29-BA81-83FD95DD7ED5");
+                Guid IdVencido = new Guid("72301DAC-FDF1-473C-9F6A-B6192C7F67D5");
+                Guid IdCerrado = new Guid("B621A222-C8D5-4CBC-B842-F887D388E9DC");
+                Guid IdAnulado = new Guid("4000E95B-8EE3-441E-9C61-6EA3F6183401");
+                Guid IdRechazado = new Guid("3666655A-47EE-478B-B6CB-CC9A557E0CFF");
+                Guid IdObservado = new Guid("6BC34E35-A223-4FE7-BA8D-E87F2784A83F");
+
+                var queryContratos = await contratoRepository.QuerySql();
+                var contratos = queryContratos.Where(x => x.Eliminado == false)
+                    .Select(x => new
+                    {
+                        x.Id,
+                        x.TituloContrato,
+                        x.FechaFin,
+                        x.FechaFinReal,
+                        x.FechaCierreContrato,
+                        x.IdEstado 
+                    }).ToList();
+
+                var notificaciones = new List<NotificacionContratoDto>();
+
+                foreach (var contrato in contratos)
+                {
+                    DateTime fechaVencimiento = (contrato.FechaFinReal ?? contrato.FechaFin).GetValueOrDefault();
+                    string mensaje;
+                    int diasRestantes = 0;
+
+                    if (contrato.IdEstado == IdCerrado)
+                    {
+                        mensaje = $"El contrato '{contrato.TituloContrato}' fue cerrado.";
+                    }
+                    else
+                    {
+                        diasRestantes = (fechaVencimiento - DateTime.Now).Days;
+
+                        if (diasRestantes > 0)
+                        {
+                            mensaje = $"El contrato '{contrato.TituloContrato}' vence en {diasRestantes} días.";
+                        }
+                        else
+                        {
+                            mensaje = $"El contrato '{contrato.TituloContrato}' ya venció hace {Math.Abs(diasRestantes)} días.";
+                        }
+                    }
+
+                    string fechaVencimientoFormateada = fechaVencimiento.ToString("d 'de' MMMM 'del' yyyy");
+
+
+                    notificaciones.Add(new NotificacionContratoDto
+                    {
+                        IdContrato = contrato.Id,
+                        TituloContrato = contrato.TituloContrato,
+                        FechaVencimiento = contrato.FechaCierreContrato ?? fechaVencimiento,
+                        DiasRestantes = (contrato.FechaCierreContrato.HasValue)
+                            ? (DateTime.Now - contrato.FechaCierreContrato.Value).Days
+                            : diasRestantes,
+                        Mensaje = mensaje,
+                        FechaVencimientoLabel = fechaVencimientoFormateada
+                    });
+                }
+
+                return notificaciones;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
     }

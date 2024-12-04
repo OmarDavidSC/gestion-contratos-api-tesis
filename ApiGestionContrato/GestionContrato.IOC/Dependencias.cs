@@ -47,6 +47,7 @@ namespace GestionContrato.IOC
             services.AddScoped<IUserLoginService, UserLoginService>();
             services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<IPerfilService, PerfilService>();
+            services.AddScoped<IResetPassword, ResetPasswordService>();
 
             services.AddScoped<IContratoService, ContratoService>();
         }

@@ -11,10 +11,12 @@ namespace GestionContrato.Api.Controllers
     public class PerfilController
     {
         private readonly IPerfilService perfilService;
+        private readonly IResetPassword restaurarService;
 
-        public PerfilController(IPerfilService _perfilService)
+        public PerfilController(IPerfilService _perfilService, IResetPassword _restaurarService)
         {
             perfilService = _perfilService;
+            restaurarService = _restaurarService;
         }
 
         [HttpGet]
@@ -46,6 +48,24 @@ namespace GestionContrato.Api.Controllers
                var perfilActualizado =  await perfilService.update(perfil);
                response = new FG<object>(true, perfilActualizado, "Datos del Perfil Actualizado correctamente");
                return response;
+            }
+            catch (Exception ex)
+            {
+                response = new FG<object>($"{ex.Message}");
+                return response;
+            }
+        }
+
+        [HttpPost]
+        [Route("update-password")]
+        public async Task<FG<object>> updatePassword([FromBody] ResetPasswordDto modelo)
+        {
+            var response = new FG<object>(false, new { }, "");
+            try
+            {
+                var nuevasCredenciales = await restaurarService.update(modelo);
+                response = new FG<object>(true, nuevasCredenciales, "Contraseña actualizada correctamente");
+                return response;
             }
             catch (Exception ex)
             {
