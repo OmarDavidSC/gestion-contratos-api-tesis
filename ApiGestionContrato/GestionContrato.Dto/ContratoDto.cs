@@ -22,6 +22,7 @@ namespace GestionContrato.Dto
         public DateTime? FechaFinReal { get; set; }
         public string? MontoContrato { get; set; }
         public string? MontoTotal { get; set; }
+        public int? DiasFaltanParaVencimiento { get; set; }
         public MonedaDto? Moneda { get; set; }
         public MetodoEntregaDto? MetodoEntrega { get; set; }
         public SistemaContratacionDto? SistemaContratacion { get; set; }
