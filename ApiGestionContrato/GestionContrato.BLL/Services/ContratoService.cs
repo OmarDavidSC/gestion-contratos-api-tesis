@@ -77,7 +77,8 @@ namespace GestionContrato.BLL.Services
                         queryContrato = queryContrato.Where(x =>
                             (x.Estado.Id == IdEnRegistro && x.IdUsuarioRegistro == filtroBandeja.IdUsuarioRegistro) ||
                             (x.Estado.Id == IdEnAprobacion && x.IdUsuarioAprobadorContrato == filtroBandeja.IdUsuarioRegistro) ||
-                            (x.Estado.Id == IdVigente && x.IdUsuarioRegistro == filtroBandeja.IdUsuarioRegistro)
+                            (x.Estado.Id == IdVigente && x.IdUsuarioRegistro == filtroBandeja.IdUsuarioRegistro) ||
+                            (x.Estado.Id == IdObservado && x.IdUsuarioRegistro == filtroBandeja.IdUsuarioRegistro)
                         );
 
                     }
@@ -136,6 +137,19 @@ namespace GestionContrato.BLL.Services
 
                 var ListaContrato = mapper.Map<List<ContratoDto>>(contrato);
 
+                DateTime fechaActual = DateTime.Now;
+                foreach (var item in ListaContrato)
+                {
+                    if (item.FechaFinReal.HasValue)
+                    {
+                        item.DiasFaltanParaVencimiento = (item.FechaFinReal.Value - fechaActual).Days;
+                    }
+                    else
+                    {
+                        item.DiasFaltanParaVencimiento = null;
+                    }
+                }
+
                 var queryAdministradores = await administradoresContratoRepository.QuerySql();
                 var listaAdmin = queryAdministradores
                                     .Include(x => x.Usuario)
@@ -172,6 +186,7 @@ namespace GestionContrato.BLL.Services
         {
             try
             {
+
                 var queryContrato = await contratoRepository.QuerySql(c => c.Id == id);
                 var contrato = queryContrato
                                     .Include(x => x.Estado)
