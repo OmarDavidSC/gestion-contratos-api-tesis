@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GestionContrato.Dto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,8 @@ namespace GestionContrato.BLL.Services.Interfaces
 {
     public interface IDashboardService
     {
+        Task<List<DashEstadoDto>> contratosPorEstado();
+        Task<List<DashTipoContratoDto>> contratosPorTipo();
+        Task<List<DashPorProveedorDto>> contratosPorProveedor();
     }
 }
