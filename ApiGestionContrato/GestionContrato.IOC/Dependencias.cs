@@ -34,6 +34,7 @@ namespace GestionContrato.IOC
            
             services.AddScoped<IAreaService,  AreaService>();
             services.AddScoped<IBancoService, BancoService>();
+            services.AddScoped<IDashboardService, DashBoardService>();
             services.AddScoped<ICompaniaAseguradoraService, CompaniaAseguradoraService>();
             services.AddScoped<IMetodoEntregaService, MetodoEntregaService>();
             services.AddScoped<IMonedaService, MonedaService>();
