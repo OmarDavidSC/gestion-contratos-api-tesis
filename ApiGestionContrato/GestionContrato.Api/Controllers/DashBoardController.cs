@@ -73,5 +73,24 @@ namespace GestionContrato.Api.Controllers
                 return response;
             }
         }
+
+        [HttpGet]
+        [Route("por-mes")]
+        public async Task<FG<object>> contratosPorMes()
+        {
+            var response = new FG<object>(false, new { }, "");
+            try
+            {
+                var data = await service.contratosPorMes();
+                response = new FG<object>(true, data, "Contratos por Mes obtentidos con éxito");
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response = new FG<object>($"{ex.Message}");
+                return response;
+            }
+        }
     }
 }

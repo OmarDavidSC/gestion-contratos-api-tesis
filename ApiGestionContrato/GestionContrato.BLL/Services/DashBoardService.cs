@@ -104,7 +104,7 @@ namespace GestionContrato.BLL.Services
                 }
 
                 var resultado = queryContrato
-                    .Where(c => c.TipoContrato != null && !string.IsNullOrEmpty(c.TipoContrato.Nombre)) // Filtrar contratos con tipo válido
+                    .Where(c => c.TipoContrato != null && !string.IsNullOrEmpty(c.TipoContrato.Nombre))
                     .GroupBy(c => c.TipoContrato!.Nombre)
                     .Select(g => new DashTipoContratoDto
                     {
@@ -117,8 +117,45 @@ namespace GestionContrato.BLL.Services
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error al obtener contratos por tipo: {ex.Message}");
+                throw new Exception($"{ex.Message}");
             }
         }
+        public async Task<List<DashPorMesDto>> contratosPorMes()
+        {
+            try
+            {
+                var queryContrato = await contratoRepostory.QuerySql();
+
+                if (queryContrato == null || !queryContrato.Any())
+                {
+                    return new List<DashPorMesDto>();
+                }
+
+                // Agrupar contratos por mes
+                var resultado = queryContrato
+                    //.Where(c => c.FechaRegistro.HasValue)
+                    .GroupBy(c => new
+                    {
+                        Año = c.FechaRegistro.Year,
+                        Mes = c.FechaRegistro.Month
+                    })
+                    .Select(g => new DashPorMesDto
+                    {
+                        Anio = g.Key.Año,
+                        Mes = g.Key.Mes,
+                        CantidadContratos = g.Count()
+                    })
+                    .OrderBy(r => r.Anio)
+                    .ThenBy(r => r.Mes)
+                    .ToList();
+
+                return resultado;
+            }
+            catch (Exception ex) 
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
     }
 }
