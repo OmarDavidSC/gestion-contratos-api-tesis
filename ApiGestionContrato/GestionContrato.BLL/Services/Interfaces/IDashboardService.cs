@@ -12,5 +12,6 @@ namespace GestionContrato.BLL.Services.Interfaces
         Task<List<DashEstadoDto>> contratosPorEstado();
         Task<List<DashTipoContratoDto>> contratosPorTipo();
         Task<List<DashPorProveedorDto>> contratosPorProveedor();
+        Task<List<DashPorMesDto>> contratosPorMes();
     }
 }

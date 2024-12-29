@@ -208,8 +208,8 @@ namespace GestionContrato.BLL.Services
                 }
 
                 var queryAdendas = await adendaRepository.QuerySql(c => c.IdContrato == id);
-                var listaAdendas = queryAdendas.Include(x => x.TipoAdenda).Include(x => x.Moneda).ToList();
 
+                var listaAdendas = queryAdendas.Include(x => x.TipoAdenda).Include(x => x.Moneda).OrderBy(x => x.CodigoAdenda).ToList();
                 contrato.Adenda = listaAdendas;
 
                 var queryAdministradores = await administradoresContratoRepository.QuerySql(c => c.IdContrato == id);
