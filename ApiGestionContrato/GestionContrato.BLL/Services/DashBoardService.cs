@@ -44,7 +44,14 @@ namespace GestionContrato.BLL.Services
                          Estado = g.Key.HasValue && estados.ContainsKey(g.Key.Value)
                              ? estados[g.Key.Value]
                              : "Estado Desconocido",
-                         Cantidad = g.Count()
+                         Cantidad = g.Count(),
+                         Contratos = g.Select(c => new ListContrato
+                         {
+                             Id = c.Id,
+                             Nombre = c.TituloContrato,
+                             CodigoContrato = c.CodigoContrato,
+                             FechaFinReal = c.FechaFinReal
+                         }).ToList()
                      })
                      .ToList();
 
