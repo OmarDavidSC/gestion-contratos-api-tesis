@@ -167,8 +167,6 @@ namespace GestionContrato.BLL.Services
 
                 var listarUsuarios = queryUsuarios
                                         .Include(u => u.Area)
-                                        .Include(u => u.UsuarioRegistro)
-                                        .Include(u => u.UsuarioModificacion)
                                         .ToList();
 
                 return mapper.Map<List<UsuarioDto>>(listarUsuarios);
