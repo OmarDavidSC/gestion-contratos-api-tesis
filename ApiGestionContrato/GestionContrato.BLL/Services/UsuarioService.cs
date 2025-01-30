@@ -94,7 +94,15 @@ namespace GestionContrato.BLL.Services
                     throw new TaskCanceledException("Usuario no encontrado");
                 }
 
+                string claveActual = usuarioEncontrado.Clave;
+
                 mapper.Map(modelo, usuarioEncontrado);
+
+                if (string.IsNullOrEmpty(modelo.Clave))
+                {
+                    usuarioEncontrado.Clave = claveActual;
+                }
+
 
                 await usuarioRepository.UpdateAsync(usuarioEncontrado);
                 await unitOfWork.SaveChangesAsync();
@@ -167,11 +175,48 @@ namespace GestionContrato.BLL.Services
 
                 var listarUsuarios = queryUsuarios
                                         .Include(u => u.Area)
-                                        .Include(u => u.UsuarioRegistro)
-                                        .Include(u => u.UsuarioModificacion)
                                         .ToList();
 
                 return mapper.Map<List<UsuarioDto>>(listarUsuarios);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<UsuarioDto> validarUsuarioEmail(string email)
+        {
+            try
+            {
+                var usuario = await usuarioRepository.Get(u => u.Correo == email);
+                if (usuario == null)
+                {
+                    throw new Exception("Usuario no encontrado.");
+                }
+
+                return mapper.Map<UsuarioDto>(usuario);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<bool> restablcerContrseana(string email, string nuevaContrasena)
+        {
+            try
+            {
+                var usuario = await usuarioRepository.Get(u => u.Correo == email);
+                if(usuario == null)
+                {
+                    throw new Exception("Usuario no encontrado");
+                }
+
+                usuario.Clave = BCrypt.Net.BCrypt.HashPassword(nuevaContrasena);
+                await usuarioRepository.UpdateAsync(usuario);
+                await unitOfWork.SaveChangesAsync();
+                return true;
             }
             catch (Exception ex)
             {

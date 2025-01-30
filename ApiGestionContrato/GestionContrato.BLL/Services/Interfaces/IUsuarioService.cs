@@ -13,9 +13,9 @@ namespace GestionContrato.BLL.Services.Interfaces
         Task<UsuarioDto> crear(UsuarioDto modelo);
         Task<bool> editar(UsuarioDto modelo);
         Task<bool> eliminar(Guid id);
-
         Task<UsuarioDto> obtenerUsuarioId(Guid id);
-
         Task<List<UsuarioDto>> buscarUsuarios(string palabra);
+        Task<UsuarioDto> validarUsuarioEmail(string email);
+        Task<bool> restablcerContrseana(string email, string nuevaContrasena);
     }
 }

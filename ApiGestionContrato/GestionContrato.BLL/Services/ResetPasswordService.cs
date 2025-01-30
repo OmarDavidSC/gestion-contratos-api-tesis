@@ -53,7 +53,7 @@ namespace GestionContrato.BLL.Services
                     throw new TaskCanceledException("Perfil no encontrado");
                 }
 
-                usuarioEncontrado.Clave = modelo.NuevaContrasena;                
+                usuarioEncontrado.Clave = BCrypt.Net.BCrypt.HashPassword(modelo.NuevaContrasena);
 
                 await usuarioRepository.UpdateAsync(usuarioEncontrado);
                 await unitOfWork.SaveChangesAsync();

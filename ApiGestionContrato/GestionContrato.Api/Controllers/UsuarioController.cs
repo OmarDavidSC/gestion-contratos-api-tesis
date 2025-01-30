@@ -1,7 +1,12 @@
 ﻿using GestionContrato.BLL.Services.Interfaces;
+using GestionContrato.DAL.Repositorios;
 using GestionContrato.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace GestionContrato.Api.Controllers
 {
@@ -110,6 +115,55 @@ namespace GestionContrato.Api.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new { message = $"Error: {ex.Message}" });
+            }
+        }
+
+        [HttpPost]
+        [Route("vemail")]
+        public async Task<FG<object>> validarEmail([FromBody] string email)
+        {
+            try
+            {
+                var usuario = await usuarioService.validarUsuarioEmail(email);
+                if(usuario != null)
+                {
+                    var response = new FG<object>(true, usuario , "Datos del usuario encontrados");
+                    return response;
+                } else
+                {
+                    var response = new FG<object>(false, new {  }, "El Usuario no esta registrado en la compañia");
+                    return response;
+                }
+            }
+            catch (Exception ex)
+            {
+                var response = new FG<object>($"{ex.Message}");
+                return response;
+            }
+        }
+
+        [HttpPost]
+        [Route("restablecer-contrasena")]
+        public async Task<FG<object>> restablecerContrasena([FromBody] RestablecerContrasenaDto modelo)
+        {
+            try
+            {
+                var usuario = await usuarioService.restablcerContrseana(modelo.Email, modelo.NuevaContrasena);
+                if (usuario)
+                {
+                    var response = new FG<object>(true, new {  }, "Credenciales del Actualizadas correctamente. Inicie sesión con su nueva Contraseña");
+                    return response;
+                }
+                else
+                {
+                    var response = new FG<object>(false, new { }, "Error al actualizar las crendenciales");
+                    return response;
+                }
+            }
+            catch (Exception ex)
+            {
+                var response = new FG<object>($"{ex.Message}");
+                return response;
             }
         }
     }

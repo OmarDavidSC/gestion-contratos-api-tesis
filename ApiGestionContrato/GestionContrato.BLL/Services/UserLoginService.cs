@@ -35,8 +35,7 @@ namespace GestionContrato.BLL.Services
         {
             try
             {
-                var queryUsuario = await usuarioRepository.QuerySql(u => u.Correo == Correo
-                                                                     && u.Clave == Clave);
+                var queryUsuario = await usuarioRepository.QuerySql(u => u.Correo == Correo);
                 var usuario = queryUsuario.FirstOrDefault();
                 if (usuario == null)
                 {
@@ -46,6 +45,12 @@ namespace GestionContrato.BLL.Services
                 if(!usuario.Habilitado)
                 {
                     throw new TaskCanceledException("El usuario esta deshabilitado. Comuniquese con el Administrador");
+                }
+
+                bool claveValida = BCrypt.Net.BCrypt.Verify(Clave, usuario.Clave);
+                if (!claveValida)
+                {
+                    throw new TaskCanceledException("Credenciales incorrectas");
                 }
 
                 return new UsuarioDto
