@@ -120,14 +120,14 @@ namespace GestionContrato.Api.Controllers
 
         [HttpPost]
         [Route("vemail")]
-        public async Task<FG<object>> validarEmail([FromBody] string email)
+        public async Task<FG<object>> validarEmail([FromBody] RestablecerContrasenaDto modelo)
         {
             try
             {
-                var usuario = await usuarioService.validarUsuarioEmail(email);
+                var usuario = await usuarioService.validarUsuarioEmail(modelo.Email);
                 if(usuario != null)
                 {
-                    var response = new FG<object>(true, usuario , "Datos del usuario encontrados");
+                    var response = new FG<object>(true, usuario , "Correo Electronico validado con éxito");
                     return response;
                 } else
                 {
@@ -151,7 +151,7 @@ namespace GestionContrato.Api.Controllers
                 var usuario = await usuarioService.restablcerContrseana(modelo.Email, modelo.NuevaContrasena);
                 if (usuario)
                 {
-                    var response = new FG<object>(true, new {  }, "Credenciales del Actualizadas correctamente. Inicie sesión con su nueva Contraseña");
+                    var response = new FG<object>(true, new {  }, "Credenciales actualizadas correctamente. Inicie sesión con su nueva Contraseña");
                     return response;
                 }
                 else
