@@ -8,7 +8,7 @@ namespace GestionContrato.Dto
 {
     public class RestablecerContrasenaDto
     {
-        public string Email { get; set; }
-        public string NuevaContrasena { get; set; }
+        public string? Email { get; set; }
+        public string? NuevaContrasena { get; set; }
     }
 }

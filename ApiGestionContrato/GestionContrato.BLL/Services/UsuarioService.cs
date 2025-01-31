@@ -192,7 +192,7 @@ namespace GestionContrato.BLL.Services
                 var usuario = await usuarioRepository.Get(u => u.Correo == email);
                 if (usuario == null)
                 {
-                    throw new Exception("Usuario no encontrado.");
+                    throw new Exception("El Usuario no esta registrado en la compañia.");
                 }
 
                 return mapper.Map<UsuarioDto>(usuario);
