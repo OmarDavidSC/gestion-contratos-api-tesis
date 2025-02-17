@@ -40,7 +40,7 @@ namespace GestionContrato.Api.Controllers
             try
             {
                 await areaService.crear(area);
-                return Ok(new { message = "Area Registrada correctamente" });
+                return Ok(new { message = "Area registrada correctamente" });
 
             }
             catch (Exception ex)

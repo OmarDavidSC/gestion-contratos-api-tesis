@@ -40,7 +40,7 @@ namespace GestionContrato.Api.Controllers
             try
             {
                 await sistemaContratacionService.crear(sistemaContratacion);
-                return Ok(new { message = "Sistema Contratacion Registrada correctamente" });
+                return Ok(new { message = "Sistema Contratacion resgitrada correctamente" });
 
             }
             catch (Exception ex)

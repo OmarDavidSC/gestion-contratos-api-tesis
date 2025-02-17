@@ -42,7 +42,7 @@ namespace GestionContrato.Api.Controllers
             try
             {
                 await metodoEntregaService.crear(metodoEntrega);
-                return Ok(new { message = "Metodo de Entrega Registrada correctamente" });
+                return Ok(new { message = "Metodo de Entrega registrada correctamente" });
 
             }
             catch (Exception ex)

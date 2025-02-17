@@ -39,7 +39,7 @@ namespace GestionContrato.Api.Controllers
             try
             {
                 await companiaAseguradoraService.crear(companiaAseguradora);
-                return Ok(new { message = "CompaniaAseguradora Registrada correctamente" });
+                return Ok(new { message = "Compañia Aseguradora registrada correctamente" });
 
             }
             catch (Exception ex)

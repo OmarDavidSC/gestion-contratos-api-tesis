@@ -40,7 +40,7 @@ namespace GestionContrato.Api.Controllers
             try
             {
                 await tipoGarantiaService.crear(tipoGarantia);
-                return Ok(new { message = "Tipo Garantia Registrada correctamente" });
+                return Ok(new { message = "Tipo Garantia registrada correctamente" });
 
             }
             catch (Exception ex)

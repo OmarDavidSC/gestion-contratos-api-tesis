@@ -40,7 +40,7 @@ namespace GestionContrato.Api.Controllers
             try
             {
                 await monedaService.crear(moneda);
-                return Ok(new { message = "Moneda Registrada correctamente" });
+                return Ok(new { message = "Moneda registrada correctamente" });
 
             }
             catch (Exception ex)
