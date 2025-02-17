@@ -39,7 +39,7 @@ namespace GestionContrato.Api.Controllers
             try
             {
                 await tipoDocumentoService.crear(tipoDocumento);
-                return Ok(new { message = "Tipo Documento Registrada correctamente" });
+                return Ok(new { message = "Tipo Documento registrado correctamente" });
 
             }
             catch (Exception ex)

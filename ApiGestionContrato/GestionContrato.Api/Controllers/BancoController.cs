@@ -39,7 +39,7 @@ namespace GestionContrato.Api.Controllers
             try
             {
                 await bancoService.crear(banco);
-                return Ok(new { message = "Banco Registrada correctamente" });
+                return Ok(new { message = "Banco registrado correctamente" });
 
             }
             catch (Exception ex)

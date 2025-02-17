@@ -40,7 +40,7 @@ namespace GestionContrato.Api.Controllers
             try
             {
                 await proveedorService.crear(proveedor);
-                return Ok(new { message = "Proveedor Registrado correctamente" });
+                return Ok(new { message = "Proveedor registrado correctamente" });
 
             }
             catch (Exception ex)

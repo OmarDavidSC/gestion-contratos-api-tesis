@@ -39,7 +39,7 @@ namespace GestionContrato.Api.Controllers
             try
             {
                 await tipoAdendaService.crear(tipoAdenda);
-                return Ok(new { message = "Tipo Adenda Registrada correctamente" });
+                return Ok(new { message = "Tipo Adenda registrada correctamente" });
 
             }
             catch (Exception ex)
