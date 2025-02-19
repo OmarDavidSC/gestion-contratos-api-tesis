@@ -16,6 +16,6 @@ namespace GestionContrato.BLL.Services.Interfaces
         Task<ContratoDto> guardarContrato(ContratoDto modelo);
         Task<bool> derivarContrato(AsigarUsuarioAprobadorDto modelo);
         Task<bool> accionContrato(AccionContratoDto modelo);
-        Task<List<NotificacionContratoDto>> ObtenerNotificacionesContratos();
+        Task<List<NotificacionContratoDto>> ObtenerNotificacionesContratos(FiltroNotificacionDto filtro);
     }
 }

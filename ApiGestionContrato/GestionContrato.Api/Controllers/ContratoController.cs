@@ -125,14 +125,14 @@ namespace GestionContrato.Api.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("notifications")]
-        public async Task<FG<object>> obtenerNotificaciones()
+        public async Task<FG<object>> obtenerNotificaciones(FiltroNotificacionDto? filtro)
         {
             var response = new FG<object>(false, new { }, "");
             try
             {
-                var data = await contratoService.ObtenerNotificacionesContratos();
+                var data = await contratoService.ObtenerNotificacionesContratos(filtro);
                 response = new FG<object>(true, data, "Notificaciones");
                 return response;
 
