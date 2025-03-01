@@ -83,6 +83,17 @@ namespace GestionContrato.BLL.Services
 
                     }
 
+                    if (filtroBandeja.Vista == "Administrativa")
+                    {
+                        //contratos donde el usuario es administrador
+                        var queryAdmin = await administradoresContratoRepository.QuerySql();
+                        var listaIdContratosAdmin = queryAdmin
+                            .Where(x => x.IdUsuario == filtroBandeja.IdUsuarioRegistro)
+                            .Select(x => x.IdContrato)
+                            .ToList();
+
+                        queryContrato = queryContrato.Where(x => listaIdContratosAdmin.Contains(x.Id));
+                    }
 
                     if (filtroBandeja.FechaRegistroInicio.HasValue && filtroBandeja.FechaRegistroFin.HasValue)
                     {
@@ -117,28 +128,41 @@ namespace GestionContrato.BLL.Services
                     }
                 }
 
+                var contratos = queryContrato
+                        .Include(x => x.Estado)
+                        .Include(x => x.Area)
+                        .Include(x => x.Proveedor)
+                        .Include(x => x.TipoContrato)
+                        .Include(x => x.SistemaContratacion)
+                        .OrderByDescending(x => x.FechaRegistro)
+                        .Select(x => new ContratoDto
+                        {
+                            Id = x.Id,
+                            CodigoContrato = x.CodigoContrato,
+                            TituloContrato = x.TituloContrato,
+                            DetalleContrato = x.DetalleContrato,
+                            FechaInicio = x.FechaInicio,
+                            FechaFin = x.FechaFin,
+                            MontoContrato = x.MontoContrato,
+                            MontoTotal = x.MontoTotal,
+                            FechaRegistro = x.FechaRegistro,
+                            FechaModificacion = x.FechaModificacion,
+                            FechaFinReal = x.FechaFinReal,
+                            DiasFaltanParaVencimiento = x.FechaFinReal.HasValue ? (x.FechaFinReal.Value - DateTime.Now).Days : (int?)null,
+                            Estado = new EstadoDto { Id = x.Estado.Id, Nombre = x.Estado.Nombre },
+                            Moneda = new MonedaDto { Id = x.Moneda.Id, Nombre = x.Moneda.Nombre },
+                            MetodoEntrega = new MetodoEntregaDto { Id = x.MetodoEntrega.Id, Nombre = x.MetodoEntrega.Nombre },
+                            Area = x.Area != null ? new AreaDto { Id = x.Area.Id, Nombre = x.Area.Nombre } : null,
+                            Proveedor = x.Proveedor != null ? new ProveedorDto { Id = x.Proveedor.Id, Nombre = x.Proveedor.Nombre } : null,
+                            TipoContrato = x.TipoContrato != null ? new TipoContratoDto { Id = x.TipoContrato.Id, Nombre = x.TipoContrato.Nombre } : null,
+                            SistemaContratacion = x.SistemaContratacion != null ? new SistemaContratacionDto { Id = x.SistemaContratacion.Id, Nombre = x.SistemaContratacion.Nombre } : null
+                        })
+                        .ToList();
 
-
-
-                var contrato = queryContrato
-                                    .Include(x => x.Estado)
-                                    .Include(x => x.Area)
-                                    .Include(x => x.Proveedor)
-                                    .Include(x => x.TipoContrato)
-                                    .Include(x => x.Moneda)
-                                    .Include(x => x.MetodoEntrega)
-                                    .Include(x => x.SistemaContratacion)
-                                    .Include(x => x.UsuarioAprobadorContrato)
-                                    .Include(x => x.UsuarioAprobadorCierre)
-                                    .Include(x => x.UsuarioRegistro)
-                                    .Include(x => x.UsuarioModificacion)
-                                    .OrderByDescending(x => x.FechaRegistro)
-                                    .ToList();
-
-                var ListaContrato = mapper.Map<List<ContratoDto>>(contrato);
+                //var ListaContrato = mapper.Map<List<ContratoDto>>(contratos);
 
                 DateTime fechaActual = DateTime.Now;
-                foreach (var item in ListaContrato)
+                foreach (var item in contratos)
                 {
                     if (item.FechaFinReal.HasValue)
                     {
@@ -152,27 +176,36 @@ namespace GestionContrato.BLL.Services
 
                 var queryAdministradores = await administradoresContratoRepository.QuerySql();
                 var listaAdmin = queryAdministradores
-                                    .Include(x => x.Usuario)
-                                    .Include(x => x.UsuarioRegistro)
-                                    .Include(x => x.UsuarioModificacion).ToList();
+                    .Include(x => x.Usuario)
+                    .Select(x => new AdministradoresContratoDto
+                    {
+                        Id = x.Id,
+                        IdContrato = x.IdContrato,
+                        Usuario = new UsuarioDto
+                        {
+                            Id = x.Usuario.Id,
+                            NombreCompleto = x.Usuario.NombreCompleto,
+                            Correo = x.Usuario.Correo,
+                            Rol = x.Usuario.Rol,
+                            Habilitado = x.Usuario.Habilitado
+                        }
+                    })
+                    .ToList();
 
                 var ListaAdministradores = mapper.Map<List<AdministradoresContratoDto>>(listaAdmin);
 
                 var queryArchivos = await archivoContratoRepository.QuerySql();
-                var listaArchivos = queryArchivos
-                                            .Include(x => x.UsuarioRegistro)
-                                            .Include(x => x.UsuarioModificacion)
-                                            .OrderBy(x => x.FechaRegistro).ToList();
+                var listaArchivos = queryArchivos.OrderBy(x => x.FechaRegistro).ToList();
 
                 var ListaArchivos = mapper.Map<List<ArchivoContratoDto>>(listaArchivos); ;
 
-                foreach (var item in ListaContrato)
+                foreach (var item in contratos)
                 {
                     item.AdministradoresContratos = ListaAdministradores.Where(x => x.IdContrato == item.Id).ToList();
                     item.ArchivoContratos = ListaArchivos.Where(x => x.IdContrato == item.Id).ToList();
                 }
 
-                return ListaContrato;
+                return contratos;
 
 
             }
@@ -761,7 +794,7 @@ namespace GestionContrato.BLL.Services
             }
         }
 
-        public async Task<List<NotificacionContratoDto>> ObtenerNotificacionesContratos()
+        public async Task<List<NotificacionContratoDto>> ObtenerNotificacionesContratos(FiltroNotificacionDto? filtro)
         {
             try
             {
@@ -776,56 +809,150 @@ namespace GestionContrato.BLL.Services
                 Guid IdObservado = new Guid("6BC34E35-A223-4FE7-BA8D-E87F2784A83F");
 
                 var queryContratos = await contratoRepository.QuerySql();
-                var contratos = queryContratos.Where(x => x.Eliminado == false)
-                    .Select(x => new
-                    {
-                        x.Id,
-                        x.TituloContrato,
-                        x.FechaFin,
-                        x.FechaFinReal,
-                        x.FechaCierreContrato,
-                        x.IdEstado 
-                    }).ToList();
+                var query = queryContratos.Where(x => x.Eliminado == false);
+
+                // Aplicar filtro por vista
+                if (filtro.Vista == "Mis Notificaciones")
+                {
+                    query = query.Where(x =>
+                        (x.IdUsuarioRegistro == filtro.IdUsuarioRegistro &&
+                         (x.IdEstado == IdEnRegistro || x.IdEstado == IdVigente ||
+                          x.IdEstado == IdVencido || x.IdEstado == IdCerrado ||
+                          x.IdEstado == IdAnulado || x.IdEstado == IdRechazado ||
+                          x.IdEstado == IdObservado)) ||
+
+                        (x.IdUsuarioAprobadorContrato == filtro.IdUsuarioRegistro && x.IdEstado == IdEnAprobacion)
+                    );
+                }
+                else if (filtro.Vista == "Administrativa")
+                {
+                    var queryAdmin = await administradoresContratoRepository.QuerySql();
+                    var listaIdContratosAdmin = queryAdmin
+                        .Where(x => x.IdUsuario == filtro.IdUsuarioRegistro)
+                        .Select(x => x.IdContrato)
+                        .ToList();
+
+                    query = query.Where(x => listaIdContratosAdmin.Contains(x.Id));
+                }
+                else 
+                {
+                    query = query.Where(x => x.FechaFin.HasValue);
+                }
+
+                var contratos = query
+                    .OrderByDescending(x => x.FechaRegistro).
+                    Select(x => new
+                {
+                    x.Id,
+                    x.TituloContrato,
+                    x.FechaFin,
+                    x.FechaFinReal,
+                    x.FechaCierreContrato,
+                    x.FechaRegistro,
+                    x.FechaModificacion,
+                    x.IdEstado,
+                    x.IdUsuarioRegistro,
+                    x.IdUsuarioAprobadorContrato
+                }).ToList();
 
                 var notificaciones = new List<NotificacionContratoDto>();
+                DateTime fechaActual = DateTime.Now;
 
                 foreach (var contrato in contratos)
                 {
                     DateTime fechaVencimiento = (contrato.FechaFinReal ?? contrato.FechaFin).GetValueOrDefault();
-                    string mensaje;
-                    int diasRestantes = 0;
+                    int diasRestantes = (fechaVencimiento - fechaActual).Days;
+                    string mensaje = "";
+                    string tipo = "";
+                    DateTime fechaNotificacion = DateTime.Now;
 
-                    if (contrato.IdEstado == IdCerrado)
+                    if (filtro.Vista == "Mis Notificaciones")
                     {
-                        mensaje = $"El contrato '{contrato.TituloContrato}' fue cerrado.";
+                        if (contrato.IdEstado == IdEnRegistro)
+                        {
+                            mensaje = $"Tu contrato '{contrato.TituloContrato}' ha sido Registrado Exitosamente.";
+                            tipo = "ContratoRegistro";
+                            fechaNotificacion = contrato.FechaRegistro;
+                        }
+                        else if (contrato.IdEstado == IdEnAprobacion)
+                        {
+                            mensaje = $"Tienes un contrato pendiente de Aprobación: '{contrato.TituloContrato}'.";
+                            tipo = "AprobacionPendiente";
+                            fechaNotificacion = contrato.FechaModificacion ?? contrato.FechaRegistro;
+                        }
+                        else if (contrato.IdEstado == IdVigente)
+                        {
+                            mensaje = $"El contrato '{contrato.TituloContrato}' está Vigente.";
+                            tipo = "ContratoVigente";
+                            fechaNotificacion = contrato.FechaModificacion ?? contrato.FechaRegistro;
+                        }
+                        else if (contrato.IdEstado == IdVencido)
+                        {
+                            mensaje = $"El contrato '{contrato.TituloContrato}' ha Vencido.";
+                            tipo = "ContratoVencido";
+                            fechaNotificacion = fechaVencimiento;
+                        }
+                        else if (contrato.IdEstado == IdCerrado)
+                        {
+                            mensaje = $"El contrato '{contrato.TituloContrato}' ha sido Cerrado.";
+                            tipo = "ContratoCerrado";
+                            fechaNotificacion = contrato.FechaCierreContrato ?? contrato.FechaModificacion ?? contrato.FechaRegistro;
+                        }
+                        else if (contrato.IdEstado == IdAnulado)
+                        {
+                            mensaje = $"El contrato '{contrato.TituloContrato}' ha sido Anulado.";
+                            tipo = "ContratoAnulado";
+                            fechaNotificacion = contrato.FechaModificacion ?? contrato.FechaRegistro;
+                        }
+                        else if (contrato.IdEstado == IdRechazado)
+                        {
+                            mensaje = $"El contrato '{contrato.TituloContrato}' ha sido Rechazado.";
+                            tipo = "ContratoRechazado";
+                            fechaNotificacion = contrato.FechaModificacion ?? contrato.FechaRegistro;
+                        }
+                        else if (contrato.IdEstado == IdObservado)
+                        {
+                            mensaje = $"El contrato '{contrato.TituloContrato}' ha sido Observado.";
+                            tipo = "ContratoObservado";
+                            fechaNotificacion = contrato.FechaModificacion ?? contrato.FechaRegistro;
+                        }
+                    }
+                    else if (filtro.Vista == "Administrativa")
+                    {
+                        mensaje = $"Fuiste Asignado como Administrador del contrato '{contrato.TituloContrato}'.";
+                        tipo = "Administrador";
+                        fechaNotificacion = contrato.FechaRegistro;
                     }
                     else
                     {
-                        diasRestantes = (fechaVencimiento - DateTime.Now).Days;
-
                         if (diasRestantes > 0)
                         {
                             mensaje = $"El contrato '{contrato.TituloContrato}' vence en {diasRestantes} días.";
+                            tipo = "ProximoVencimiento";
+                            fechaNotificacion = fechaVencimiento;
                         }
                         else
                         {
                             mensaje = $"El contrato '{contrato.TituloContrato}' ya venció hace {Math.Abs(diasRestantes)} días.";
+                            tipo = "VencimientoPasado";
+                            fechaNotificacion = fechaVencimiento;
                         }
                     }
 
                     string fechaVencimientoFormateada = fechaVencimiento.ToString("d 'de' MMMM 'del' yyyy");
-
+                    string fechaNotiFormateada = fechaNotificacion.ToString("d 'de' MMMM 'del' yyyy");
 
                     notificaciones.Add(new NotificacionContratoDto
                     {
                         IdContrato = contrato.Id,
                         TituloContrato = contrato.TituloContrato,
                         FechaVencimiento = contrato.FechaCierreContrato ?? fechaVencimiento,
-                        DiasRestantes = (contrato.FechaCierreContrato.HasValue)
-                            ? (DateTime.Now - contrato.FechaCierreContrato.Value).Days
-                            : diasRestantes,
+                        DiasRestantes = contrato.FechaCierreContrato.HasValue ? (fechaActual - contrato.FechaCierreContrato.Value).Days : diasRestantes,
                         Mensaje = mensaje,
-                        FechaVencimientoLabel = fechaVencimientoFormateada
+                        FechaVencimientoLabel = fechaVencimientoFormateada,
+                        Tipo = tipo,
+                        FechaNotificacion = fechaNotificacion,
+                        FechaNotificacionLabel = fechaNotiFormateada
                     });
                 }
 
