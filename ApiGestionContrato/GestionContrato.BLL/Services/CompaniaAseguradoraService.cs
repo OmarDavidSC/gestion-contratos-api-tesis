@@ -59,6 +59,8 @@ namespace GestionContrato.BLL.Services
 
                 var companiaAseguradoraEntidad = mapper.Map<CompaniaAseguradora>(modelo);
 
+                companiaAseguradoraEntidad.FechaRegistro = DateTime.Now;
+                companiaAseguradoraEntidad.FechaModificacion = DateTime.Now;
                 await companiaAseguradoraRepository.AddAsync(companiaAseguradoraEntidad);
                 await unitOfWork.SaveChangesAsync();
 
@@ -83,6 +85,7 @@ namespace GestionContrato.BLL.Services
 
                 mapper.Map(modelo, companiaAseguradoraEncontrado);
 
+                companiaAseguradoraEncontrado.FechaModificacion = DateTime.Now;
                 await companiaAseguradoraRepository.UpdateAsync(companiaAseguradoraEncontrado);
                 await unitOfWork.SaveChangesAsync();
                 return true;

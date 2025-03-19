@@ -59,6 +59,8 @@ namespace GestionContrato.BLL.Services
 
                 var sistemaContratacionEntidad = mapper.Map<SistemaContratacion>(modelo);
 
+                sistemaContratacionEntidad.FechaRegistro = DateTime.Now;
+                sistemaContratacionEntidad.FechaModificacion = DateTime.Now;
                 await sistemaContratacionRepository.AddAsync(sistemaContratacionEntidad);
                 await unitOfWork.SaveChangesAsync();
 
@@ -83,6 +85,7 @@ namespace GestionContrato.BLL.Services
 
                 mapper.Map(modelo, sistemaContratacionEncontrado);
 
+                sistemaContratacionEncontrado.FechaModificacion = DateTime.Now;
                 await sistemaContratacionRepository.UpdateAsync(sistemaContratacionEncontrado);
                 await unitOfWork.SaveChangesAsync();
                 return true;

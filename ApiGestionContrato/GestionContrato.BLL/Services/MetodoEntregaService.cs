@@ -57,6 +57,8 @@ namespace GestionContrato.BLL.Services
 
                 var metodoEntregaEntidad = mapper.Map<MetodoEntrega>(modelo);
 
+                metodoEntregaEntidad.FechaRegistro = DateTime.Now;
+                metodoEntregaEntidad.FechaModificacion = DateTime.Now;
                 await metodoEntregaRepository.AddAsync(metodoEntregaEntidad);
                 await unitOfWork.SaveChangesAsync();
 
@@ -81,6 +83,7 @@ namespace GestionContrato.BLL.Services
 
                 mapper.Map(modelo, metodoEntregaEncontrado);
 
+                metodoEntregaEncontrado.FechaModificacion = DateTime.Now;
                 await metodoEntregaRepository.UpdateAsync(metodoEntregaEncontrado);
                 await unitOfWork.SaveChangesAsync();
                 return true;

@@ -71,6 +71,8 @@ namespace GestionContrato.BLL.Services
 
                 var usuarioEntidad = mapper.Map<Usuario>(modelo);
 
+                usuarioEntidad.FechaRegistro = DateTime.Now;
+                usuarioEntidad.FechaModificacion = DateTime.Now;
                 await usuarioRepository.AddAsync(usuarioEntidad);
                 await unitOfWork.SaveChangesAsync();
 
@@ -103,7 +105,7 @@ namespace GestionContrato.BLL.Services
                     usuarioEncontrado.Clave = claveActual;
                 }
 
-
+                usuarioEncontrado.FechaModificacion = DateTime.Now;
                 await usuarioRepository.UpdateAsync(usuarioEncontrado);
                 await unitOfWork.SaveChangesAsync();
                 return true;

@@ -59,6 +59,8 @@ namespace GestionContrato.BLL.Services
 
                 var tipoAdendaEndidad = mapper.Map<TipoAdenda>(modelo);
 
+                tipoAdendaEndidad.FechaRegistro  = DateTime.Now;
+                tipoAdendaEndidad.FechaModificacion = DateTime.Now;
                 await tipoAdendaRepository.AddAsync(tipoAdendaEndidad);
                 await unitOfWork.SaveChangesAsync();
 
@@ -83,6 +85,7 @@ namespace GestionContrato.BLL.Services
 
                 mapper.Map(modelo, tipoAdendaEncontrada);
 
+                tipoAdendaEncontrada.FechaModificacion = DateTime.Now;
                 await tipoAdendaRepository.UpdateAsync(tipoAdendaEncontrada);
                 await unitOfWork.SaveChangesAsync();
 

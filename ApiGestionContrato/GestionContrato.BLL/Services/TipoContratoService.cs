@@ -59,6 +59,8 @@ namespace GestionContrato.BLL.Services
 
                 var tipoContratoEndidad = mapper.Map<TipoContrato>(modelo);
 
+                tipoContratoEndidad.FechaRegistro = DateTime.Now;
+                tipoContratoEndidad.FechaModificacion = DateTime.Now;
                 await tipoContratoRepository.AddAsync(tipoContratoEndidad);
                 await unitOfWork.SaveChangesAsync();
 
@@ -83,6 +85,7 @@ namespace GestionContrato.BLL.Services
 
                 mapper.Map(modelo, tipoContratoEncontrada);
 
+                tipoContratoEncontrada.FechaModificacion = DateTime.Now;
                 await tipoContratoRepository.UpdateAsync(tipoContratoEncontrada);
                 await unitOfWork.SaveChangesAsync();
 

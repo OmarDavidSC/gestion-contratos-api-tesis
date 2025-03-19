@@ -59,6 +59,8 @@ namespace GestionContrato.BLL.Services
 
                 var tipoPolizaEndidad = mapper.Map<TipoPoliza>(modelo);
 
+                tipoPolizaEndidad.FechaRegistro = DateTime.Now;
+                tipoPolizaEndidad.FechaModificacion = DateTime.Now;
                 await tipoPolizaRepository.AddAsync(tipoPolizaEndidad);
                 await unitOfWork.SaveChangesAsync();
 
@@ -83,6 +85,7 @@ namespace GestionContrato.BLL.Services
 
                 mapper.Map(modelo, tipoPolizaEncontrada);
 
+                tipoPolizaEncontrada.FechaModificacion = DateTime.Now;
                 await tipoPolizaRepository.UpdateAsync(tipoPolizaEncontrada);
                 await unitOfWork.SaveChangesAsync();
 
