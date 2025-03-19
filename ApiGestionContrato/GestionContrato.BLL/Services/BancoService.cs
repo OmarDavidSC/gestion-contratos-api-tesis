@@ -59,6 +59,8 @@ namespace GestionContrato.BLL.Services
 
                 var bancoEntidad = mapper.Map<Banco>(modelo);
 
+                bancoEntidad.FechaRegistro = DateTime.Now;
+                bancoEntidad.FechaModificacion = DateTime.Now;
                 await bancoRepository.AddAsync(bancoEntidad);
                 await unitOfWork.SaveChangesAsync();
 
@@ -83,6 +85,7 @@ namespace GestionContrato.BLL.Services
 
                 mapper.Map(modelo, bancoEncontrado);
 
+                bancoEncontrado.FechaModificacion = DateTime.Now;
                 await bancoRepository.UpdateAsync(bancoEncontrado);
                 await unitOfWork.SaveChangesAsync();
                 return true;

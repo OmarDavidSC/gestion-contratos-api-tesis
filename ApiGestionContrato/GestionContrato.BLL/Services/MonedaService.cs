@@ -58,6 +58,8 @@ namespace GestionContrato.BLL.Services
 
                 var monedaEntidad = mapper.Map<Moneda>(modelo);
 
+                monedaEntidad.FechaRegistro = DateTime.Now;
+                monedaEntidad.FechaModificacion = DateTime.Now;
                 await monedaRepository.AddAsync(monedaEntidad);
                 await unitOfWork.SaveChangesAsync();
 
@@ -82,6 +84,7 @@ namespace GestionContrato.BLL.Services
 
                 mapper.Map(modelo, monedaEncontrado);
 
+                monedaEncontrado.FechaModificacion = DateTime.Now;
                 await monedaRepository.UpdateAsync(monedaEncontrado);
                 await unitOfWork.SaveChangesAsync();
                 return true;

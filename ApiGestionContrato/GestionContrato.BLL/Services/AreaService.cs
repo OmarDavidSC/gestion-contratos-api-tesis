@@ -59,6 +59,8 @@ namespace GestionContrato.BLL.Services
 
                 var areaEntidad = mapper.Map<Area>(modelo);
 
+                areaEntidad.FechaRegistro = DateTime.Now;
+                areaEntidad.FechaModificacion = DateTime.Now;
                 await areaRepository.AddAsync(areaEntidad);
                 await unitOfWork.SaveChangesAsync();
 
@@ -83,6 +85,7 @@ namespace GestionContrato.BLL.Services
 
                 mapper.Map(modelo, areaEncontrado);
 
+                areaEncontrado.FechaModificacion = DateTime.Now;
                 await areaRepository.UpdateAsync(areaEncontrado);
                 await unitOfWork.SaveChangesAsync();
                 return true;

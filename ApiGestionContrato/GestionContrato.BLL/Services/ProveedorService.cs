@@ -59,6 +59,8 @@ namespace GestionContrato.BLL.Services
 
                 var provedorEntidad = mapper.Map<Proveedor>(modelo);
 
+                provedorEntidad.FechaRegistro = DateTime.Now;
+                provedorEntidad.FechaModificacion = DateTime.Now;
                 await proveedorRepository.AddAsync(provedorEntidad);
                 await unitOfWork.SaveChangesAsync();
 
@@ -83,6 +85,7 @@ namespace GestionContrato.BLL.Services
 
                 mapper.Map(modelo, provedorEncontrado);
 
+                provedorEncontrado.FechaModificacion = DateTime.Now;
                 await proveedorRepository.UpdateAsync(provedorEncontrado);
                 await unitOfWork.SaveChangesAsync();
                 return true;
