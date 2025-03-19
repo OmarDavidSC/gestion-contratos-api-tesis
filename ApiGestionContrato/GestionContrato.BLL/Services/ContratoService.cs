@@ -504,7 +504,7 @@ namespace GestionContrato.BLL.Services
 
                     foreach (var historial in historialContratoEntidad)
                     {
-                        historial.Crear(contratoEntidad.Id, contratoEntidad.IdUsuarioRegistro);
+                        historial.Crear(contratoEntidad.Id, contratoEntidad.IdUsuarioModificacion.Value);
                         await historialEventoRepository.AddAsync(historial);
                     }
 
@@ -657,7 +657,7 @@ namespace GestionContrato.BLL.Services
 
                     foreach (var historial in historialContratoEntidad)
                     {
-                        historial.Crear(contratoEntidad.Id, contratoEntidad.IdUsuarioRegistro);
+                        historial.Crear(contratoEntidad.Id, contratoEntidad.IdUsuarioModificacion.Value);
                         await historialEventoRepository.AddAsync(historial);
                     }
 
