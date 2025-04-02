@@ -596,7 +596,6 @@ namespace GestionContrato.BLL.Services
                         }
                     }
 
-
                     foreach (var garantia in nuevasGarantiasContratoEntidad)
                     {
                         var garantiaExistente = garantiasActuales.FirstOrDefault(g => g.Id == garantia.Id);
@@ -661,7 +660,6 @@ namespace GestionContrato.BLL.Services
                         await historialEventoRepository.AddAsync(historial);
                     }
 
-                    //adendas= se crea nueva, y actualizar la fecha fin real del contrato y el monto total del contrato
                     foreach (var adenda in nuevasAdendasContratoEntidad)
                     {
                         var adendaExistente = AdendasActuales.FirstOrDefault(a => a.Id == adenda.Id);
@@ -698,7 +696,6 @@ namespace GestionContrato.BLL.Services
                     await scope.CommitAsync();
 
                 }
-
                 return result;
 
             }
@@ -731,7 +728,6 @@ namespace GestionContrato.BLL.Services
                     contratoEntidad.IdUsuarioAprobadorContrato = modelo.IdUsuarioAprobadorContrato;
 
                     await contratoRepository.UpdateAsync(contratoEntidad);
-
 
                     HistorialEvento historial = new HistorialEvento();
                     historial.Descripcion = modelo.Evento;
