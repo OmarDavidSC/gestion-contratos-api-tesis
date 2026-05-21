@@ -30,7 +30,6 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.AddScoped<MailService>();
 
-
 // Add services to the container.
 
 builder.Services.AddControllers();
